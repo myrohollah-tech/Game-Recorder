@@ -1,0 +1,141 @@
+{
+  "entities": {
+    "StreamConfig": {
+      "title": "StreamConfig",
+      "description": "Configuration and YouTube Live broadcast preset for 720p 30fps 6Mbps game streaming.",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "description": "Owner Google UID"
+        },
+        "title": {
+          "type": "string",
+          "description": "YouTube Live broadcast title"
+        },
+        "description": {
+          "type": "string",
+          "description": "YouTube Live broadcast description"
+        },
+        "rtmpUrl": {
+          "type": "string",
+          "description": "YouTube Live RTMP ingestion URL"
+        },
+        "streamKey": {
+          "type": "string",
+          "description": "YouTube Live stream key or broadcast ID"
+        },
+        "privacyStatus": {
+          "type": "string",
+          "enum": ["public", "unlisted", "private"],
+          "description": "YouTube broadcast visibility"
+        },
+        "resolution": {
+          "type": "string",
+          "description": "Capture resolution (1280x720)"
+        },
+        "fps": {
+          "type": "integer",
+          "description": "Frames per second (30)"
+        },
+        "bitrateKbps": {
+          "type": "integer",
+          "description": "Video bitrate in kbps (6000)"
+        },
+        "cameraEnabled": {
+          "type": "boolean",
+          "description": "Whether 300x250 front camera overlay is active"
+        },
+        "micEnabled": {
+          "type": "boolean",
+          "description": "Whether microphone audio is enabled"
+        },
+        "gameAudioEnabled": {
+          "type": "boolean",
+          "description": "Whether internal game audio capture is enabled"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of creation (FieldValue.serverTimestamp())"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of last update (FieldValue.serverTimestamp())"
+        }
+      },
+      "required": [
+        "userId",
+        "title",
+        "description",
+        "rtmpUrl",
+        "streamKey",
+        "privacyStatus",
+        "resolution",
+        "fps",
+        "bitrateKbps",
+        "cameraEnabled",
+        "micEnabled",
+        "gameAudioEnabled",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "StreamNote": {
+      "title": "StreamNote",
+      "description": "Quick note or checklist item for the streamer during live gameplay.",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "description": "Owner Google UID"
+        },
+        "title": {
+          "type": "string",
+          "description": "Note title"
+        },
+        "content": {
+          "type": "string",
+          "description": "Note body content"
+        },
+        "isPinned": {
+          "type": "boolean",
+          "description": "Whether the note is pinned to the live control deck"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of creation (FieldValue.serverTimestamp())"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of last update (FieldValue.serverTimestamp())"
+        }
+      },
+      "required": [
+        "userId",
+        "title",
+        "content",
+        "isPinned",
+        "createdAt",
+        "updatedAt"
+      ]
+    }
+  },
+  "firestore": {
+    "/stream_configs/{configId}": {
+      "schema": {
+        "$ref": "#/entities/StreamConfig"
+      },
+      "description": "User-owned YouTube Live stream profiles and capture presets"
+    },
+    "/stream_notes/{noteId}": {
+      "schema": {
+        "$ref": "#/entities/StreamNote"
+      },
+      "description": "User-owned streamer notes and reminders"
+    }
+  }
+}

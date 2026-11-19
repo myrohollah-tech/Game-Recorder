@@ -1,0 +1,114 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Pillar 1: Global default-deny safety net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() >= 1 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function isValidStreamConfig(data) {
+      return data.userId is string && data.userId == request.auth.uid && data.userId.size() >= 1 && data.userId.size() <= 128 &&
+             data.title is string && data.title.size() >= 1 && data.title.size() <= 120 &&
+             data.description is string && data.description.size() <= 500 &&
+             data.rtmpUrl is string && data.rtmpUrl.size() >= 1 && data.rtmpUrl.size() <= 200 &&
+             data.streamKey is string && data.streamKey.size() <= 150 &&
+             data.privacyStatus is string && data.privacyStatus in ['public', 'unlisted', 'private'] &&
+             data.resolution is string && data.resolution.size() >= 1 && data.resolution.size() <= 32 &&
+             data.fps is int && data.fps >= 15 && data.fps <= 60 &&
+             data.bitrateKbps is int && data.bitrateKbps >= 500 && data.bitrateKbps <= 20000 &&
+             data.cameraEnabled is bool &&
+             data.micEnabled is bool &&
+             data.gameAudioEnabled is bool &&
+             data.createdAt is timestamp && data.createdAt <= request.time &&
+             data.updatedAt is timestamp && data.updatedAt <= request.time;
+    }
+
+    function isValidStreamNote(data) {
+      return data.userId is string && data.userId == request.auth.uid && data.userId.size() >= 1 && data.userId.size() <= 128 &&
+             data.title is string && data.title.size() >= 1 && data.title.size() <= 100 &&
+             data.content is string && data.content.size() >= 1 && data.content.size() <= 1000 &&
+             data.isPinned is bool &&
+             data.createdAt is timestamp && data.createdAt <= request.time &&
+             data.updatedAt is timestamp && data.updatedAt <= request.time;
+    }
+
+    match /stream_configs/{configId} {
+      allow get: if isSignedIn() && isValidId(configId) && existing().userId == request.auth.uid;
+      allow list: if isSignedIn() && existing().userId == request.auth.uid;
+
+      allow create: if isSignedIn() &&
+                       isValidId(configId) &&
+                       incoming().keys().hasAll([
+                         'userId', 'title', 'description', 'rtmpUrl', 'streamKey',
+                         'privacyStatus', 'resolution', 'fps', 'bitrateKbps',
+                         'cameraEnabled', 'micEnabled', 'gameAudioEnabled',
+                         'createdAt', 'updatedAt'
+                       ]) &&
+                       incoming().keys().hasOnly([
+                         'userId', 'title', 'description', 'rtmpUrl', 'streamKey',
+                         'privacyStatus', 'resolution', 'fps', 'bitrateKbps',
+                         'cameraEnabled', 'micEnabled', 'gameAudioEnabled',
+                         'createdAt', 'updatedAt'
+                       ]) &&
+                       isValidStreamConfig(incoming());
+
+      allow update: if isSignedIn() &&
+                       isValidStreamConfig(incoming()) &&
+                       isValidId(configId) &&
+                       existing().userId == request.auth.uid &&
+                       incoming().userId == existing().userId &&
+                       incoming().createdAt == existing().createdAt &&
+                       incoming().diff(existing()).affectedKeys().hasOnly([
+                         'title', 'description', 'rtmpUrl', 'streamKey',
+                         'privacyStatus', 'resolution', 'fps', 'bitrateKbps',
+                         'cameraEnabled', 'micEnabled', 'gameAudioEnabled',
+                         'updatedAt'
+                       ]);
+
+      allow delete: if isSignedIn() && isValidId(configId) && existing().userId == request.auth.uid;
+    }
+
+    match /stream_notes/{noteId} {
+      allow get: if isSignedIn() && isValidId(noteId) && existing().userId == request.auth.uid;
+      allow list: if isSignedIn() && existing().userId == request.auth.uid;
+
+      allow create: if isSignedIn() &&
+                       isValidId(noteId) &&
+                       incoming().keys().hasAll([
+                         'userId', 'title', 'content', 'isPinned', 'createdAt', 'updatedAt'
+                       ]) &&
+                       incoming().keys().hasOnly([
+                         'userId', 'title', 'content', 'isPinned', 'createdAt', 'updatedAt'
+                       ]) &&
+                       isValidStreamNote(incoming());
+
+      allow update: if isSignedIn() &&
+                       isValidStreamNote(incoming()) &&
+                       isValidId(noteId) &&
+                       existing().userId == request.auth.uid &&
+                       incoming().userId == existing().userId &&
+                       incoming().createdAt == existing().createdAt &&
+                       incoming().diff(existing()).affectedKeys().hasOnly([
+                         'title', 'content', 'isPinned', 'updatedAt'
+                       ]);
+
+      allow delete: if isSignedIn() && isValidId(noteId) && existing().userId == request.auth.uid;
+    }
+  }
+}

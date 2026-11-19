@@ -1,0 +1,26 @@
+<resources>
+    <string name="app_name">StreamCast Live</string>
+    <string name="sign_in_title">استودیو استریم بازی در YouTube Live</string>
+    <string name="sign_in_subtitle">ضبط مستقیم صفحه بازی با کیفیت 720p (30fps / 6Mbps)، تصویر دوربین جلو (300×250) و کنترل مستقل صدا</string>
+    <string name="sign_in_with_google">ورود امن با حساب Google / YouTube</string>
+    <string name="sign_out">خروج از حساب</string>
+    <string name="screen_capture_title">ضبط صفحه بازی (Screen Capture)</string>
+    <string name="screen_capture_specs">720p (1280×720) • 30 FPS • 6 Mbps</string>
+    <string name="start_capture">شروع ضبط صفحه (Play)</string>
+    <string name="stop_capture">توقف ضبط صفحه (Stop)</string>
+    <string name="camera_control_label">دوربین جلو (300×250 px)</string>
+    <string name="mic_control_label">میکروفون (Microphone)</string>
+    <string name="game_audio_control_label">صدای بازی (Game Audio)</string>
+    <string name="youtube_live_section">پخش زنده YouTube Live</string>
+    <string name="start_youtube_live">شروع پخش زنده (GO LIVE)</string>
+    <string name="stop_youtube_live">پایان پخش زنده (END LIVE)</string>
+    <string name="create_or_select_stream">انتخاب / ایجاد استریم YouTube</string>
+    <string name="streamer_notes_section">یادداشت‌های سریع استریمر</string>
+    <string name="add_note">افزودن یادداشت</string>
+    <string name="status_on">فعال (ON)</string>
+    <string name="status_off">غیرفعال (OFF)</string>
+    <string name="status_recording">در حال ضبط (RECORDING)</string>
+    <string name="status_stopped">متوقف (STOPPED)</string>
+    <string name="status_live">در حال پخش زنده (LIVE)</string>
+    <string name="status_offline">آفلاین (OFFLINE)</string>
+</resources>
